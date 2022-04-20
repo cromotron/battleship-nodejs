@@ -23,38 +23,47 @@ class Battleship {
         var position, computerPos;
         this.hitPositions= [];
         this.missPositions=[];
+        this.computerPos =[];
         do {
             console.log();
-            console.log("Player, it's your turn");
-            console.log("Enter coordinates for your shot :");
+            console.log("Player, it's your turn ");
+            console.log("Enter coordinates for your shot 🚀:");
             position = Battleship.ParsePosition(readline.question());
             isHit = gameController.CheckIsHit(this.enemyFleet, position);
 
             telemetryWorker.postMessage({eventName: 'Player_ShootPosition', properties:  {Position: position.toString(), IsHit: isHit}});
 
             if(isHit){
-                console.log("Nice hit !");
+                beep();
+                console.log("🚀💥🚢  You hit a ship!");
                 this.hitPositions.push(position);
                 if (this.handleShipHitMessage(this.enemyFleet, position, true)) {
                     break;
                 }
             }else{
-                console.log("Miss");
+                console.log("🌊 You Missed a hit");
                 this.missPositions.push(position);
             }
 
-            computerPos = this.GetRandomPosition();
+            do{
+                computerPos = this.GetRandomPosition();
+                if(this.computerPos.findIndex((a)=>a.column ===  computerPos.column && a.row === computerPos.row) ===-1){
+                    break;
+                }                                
+            }while(true);
+            
             isHit = gameController.CheckIsHit(this.myFleet, computerPos);
 
             telemetryWorker.postMessage({eventName: 'Computer_ShootPosition', properties:  {Position: computerPos.toString(), IsHit: isHit}});
 
             if(isHit){
-                console.log(`Computer shot in ${computerPos.column}${computerPos.row} and has hit your ship !`);
+                beep();                
+                console.log(`🚀🚢 💥 Computer has hit your ship @ ${computerPos.toString()}!`);
                 if (this.handleShipHitMessage(this.myFleet, computerPos, false)) {
                     break;
                 }
             }else{
-                console.log(`Computer shot in ${computerPos.column}${computerPos.row} and miss`);
+                console.log(`🌊 Computer missed a hit @ ${computerPos.toString()}`);
             }
             this.displayFleetStatus();
         }
@@ -63,14 +72,13 @@ class Battleship {
 
 
 
-    handleShipHitMessage(fleet, shot, isHuman){
-        Battleship.displayShipHitMessage();
+    handleShipHitMessage(fleet, shot, isHuman){        
         var hitShipIndex = gameController.getHitShipCounter(fleet, shot);
         var isDestroyed = false;
         if(fleet[hitShipIndex].hitCount !== fleet[hitShipIndex].size){
             fleet[hitShipIndex].hitCount++;
             if(fleet[hitShipIndex].hitCount === fleet[hitShipIndex].size){
-                console.log(`The ship ${fleet[hitShipIndex].name} is destroyed.!!`);
+                //console.log(`The ship ${fleet[hitShipIndex].name} is destroyed.!!`);
             }
         }
 
@@ -95,7 +103,7 @@ class Battleship {
             }
         })
         console.log("");
-        console.log(`Hit positions: ${this.hitPositions.map(position=> position.toString()).join(', ')}`);
+        console.log(`Hit positions 🚀: ${this.hitPositions.map(position=> position.toString()).join(', ')}`);
         //console.log(`Miss positions: ${this.missPositions.map(position=> position.toString()).join(', ')}`)
         console.log("");
         console.log("This is the status of your enemy fleet");
@@ -116,12 +124,14 @@ class Battleship {
     }
 
     static ParsePosition(input) {
-      const result = /^([A-H]+[1-8])$/.test(input);
+      const result = /^([A-H]+[1-8])$/.test(input.toUpperCase());      
       if(!result) {
-        throw "Invalid Coordinates (Acceptable: A-H & 1-8. Example: A8)";
+          const message = `Invalid Coordinates '${input}' (Acceptable: A-H & 1-8. Example: A8)`;
+          throw message;
       }
       if(input.length > 2) {
-        throw "Must specify one column (A-H) and one row (1-8)";
+        const message = `Invalid input '${input}'. Must specify one column (A-H) and one row (1-8)`;
+        throw message;
       }
       var letter = letters.get(input.toUpperCase().substring(0, 1));
       var number = parseInt(input.substring(1, 2), 10);
@@ -239,34 +249,9 @@ class Battleship {
 
     static displayHitStartMessage(){
         console.clear();
-        console.log();
-        console.log("                  __");
-        console.log("                 /  \\");
-        console.log("           .-.  |    |");
-        console.log("   *    _.-'  \\  \\__/");
-        console.log("    \\.-'       \\");
-        console.log("   /          _/");
-        console.log("  |      _  /");
-        console.log("  |     /_\\'");
-        console.log("   \\    \\_/");
-        console.log("    \"\"\"\"");
+        console.log("🚀🚀🚀🚀🚀🚀 🚀🚀🚀🚀🚀🚀 🚀🚀🚀🚀🚀🚀 🚀🚀🚀🚀🚀🚀 🚀🚀🚀🚀🚀🚀 🚀🚀🚀🚀🚀🚀 🚀🚀🚀🚀🚀🚀");
         console.log();
     }
-    static displayShipHitMessage(){
-        beep();
-        console.log();
-        console.log("                \\         .  ./");
-        console.log("              \\      .:\";'.:..\"   /");
-        console.log("                  (M^^.^~~:.'\").");
-        console.log("            -   (/  .    . . \\ \\)  -");
-        console.log("               ((| :. ~ ^  :. .|))");
-        console.log("            -   (\\- |  \\ /  |  /)  -");
-        console.log("                 -\\  \\     /  /-");
-        console.log("                   \\  \\   /  /");
-        console.log();
-    }
-
-
 }
 
 module.exports = Battleship;
