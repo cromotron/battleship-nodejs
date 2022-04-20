@@ -120,6 +120,9 @@ class Battleship {
       if(!result) {
         throw "Invalid Coordinates (Acceptable: A-H & 1-8. Example: A8)";
       }
+      if(input.length > 2) {
+        throw "Must specify one column (A-H) and one row (1-8)";
+      }
       var letter = letters.get(input.toUpperCase().substring(0, 1));
       var number = parseInt(input.substring(1, 2), 10);
       return new position(letter, number);
