@@ -96,7 +96,7 @@ class Battleship {
         })
         console.log("");
         console.log(`Hit positions: ${this.hitPositions.map(position=> position.toString()).join(', ')}`);
-        console.log(`Miss positions: ${this.missPositions.map(position=> position.toString()).join(', ')}`)
+        //console.log(`Miss positions: ${this.missPositions.map(position=> position.toString()).join(', ')}`)
         console.log("");
         console.log("This is the status of your enemy fleet");
         console.log("");
@@ -104,7 +104,7 @@ class Battleship {
             if(ship.hitCount === ship.size){
                 console.log(`⛔️ ${ship.name}: is sunk`);
             }else{
-                console.log(`✅ ${ship.hitCount}(${ship.size}) - '${ship.name}'`);
+                console.log(`✅ ${ship.name}`);
             }
         });
 
@@ -132,8 +132,8 @@ class Battleship {
     }
 
     InitializeGame() {
-        //this.InitializeMyFleetDemo();
-        this.InitializeMyFleet();
+        this.InitializeMyFleetDemo();
+        //this.InitializeMyFleet();
         this.InitializeEnemyFleet();
     }
 
