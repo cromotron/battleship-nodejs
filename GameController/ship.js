@@ -1,4 +1,5 @@
 const letters = require("./letters.js");
+const position = require("./position.js");
 
 class Ship {
     constructor(name, size, color) {
@@ -32,6 +33,12 @@ class Ship {
       }
 
       this.positions.push(position);
+    }
+  
+    addPositions(starting) {
+       for (let i = 0; i < this.size; i++) {
+         this.addPosition(new position(starting.column.key, starting.row + i));
+       }
     }
   
     isContinous() {
